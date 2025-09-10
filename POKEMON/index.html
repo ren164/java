@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MonQuest - Demo</title>
+<style>
+  body { background:#111; color:#eee; font-family:Arial,Helvetica,sans-serif; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px; }
+  canvas { background:#5aa; image-rendering:pixelated; border:4px solid #222; display:block; }
+  #ui { width:640px; max-width:95vw; margin-top:12px; display:flex; gap:10px; justify-content:center; }
+  .button { background:#333;border:1px solid #555;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer; }
+  .button:active{transform:translateY(1px)}
+  #log { width:640px; max-width:95vw; height:80px; margin-top:8px; background:#0b0b0b;color:#ddd;padding:8px; overflow:auto; border:1px solid #333; font-size:14px; }
+  #battleOverlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  #battleBox { width:640px; max-width:95vw; background:linear-gradient(#222,#111); border:3px solid #333; padding:12px; color:#fff; display:none; pointer-events:auto; }
+  .hpbar { height:12px; background:#550; border:1px solid #222; margin:6px 0; border-radius:6px; overflow:hidden; }
+  .hpfill { height:100%; background:limegreen; width:100%; }
+</style>
+</head>
+<body>
+<h2>MonQuest — Demo</h2>
+<canvas id="game" width="640" height="480"></canvas>
+
+<div id="ui">
+  <div class="button" id="btnCenter">Centralizar</div>
+  <div class="button" id="btnStats">Ver status</div>
+  <div class="button" id="btnReset">Resetar</div>
+</div>
+
+<div id="log">Use setas para andar. Entre na grama para encontrar Monstros.</div>
+
+<div id="battleOverlay">
+  <div id="battleBox">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div id="enemyName">Inimigo</div>
+        <div class="hpbar"><div id="enemyHp" class="hpfill"></div></div>
+      </div>
+      <div>
+        <div id="playerName">SeuMon</div>
+        <div class="hpbar"><div id="playerHp" class="hpfill"></div></div>
+      </div>
+    </div>
+    <canvas id="battleCanvas" width="600" height="220" style="background:#0a0a12; display:block; margin:8px auto; border:1px solid #222"></canvas>
+    <div style="display:flex; gap:10px; justify-content:center; margin-top:8px;">
+      <button class="button" id="attackBtn">Atacar</button>
+      <button class="button" id="runBtn">Fugir</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Config
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const tileSize = 32;
+  const cols = Math.floor(canvas.width / tileSize);
+  const rows = Math.floor(canvas.height / tileSize);
+
+  // --- SPRITES (gerados dinamicamente) ---
+  function makePlayerSprite(size = 48) {
+    const s = document.createElement('canvas');
+    s.width = size; s.height = size;
+    const c = s.getContext('2d');
+
+    // sombra
+    c.fillStyle = 'rgba(0,0,0,0.35)';
+    c.beginPath(); c.ellipse(size/2, size-8, size*0.25, 6, 0,0,Math.PI*2); c.fill();
+
+    // capa
+    c.fillStyle = '#7c3a4a';
+    c.beginPath();
+    c.moveTo(size*0.33, size*0.45);
+    c.quadraticCurveTo(size*0.5, size*0.85, size*0.66, size*0.45);
+    c.lineTo(size*0.66, size*0.6);
+    c.quadraticCurveTo(size*0.5, size*0.95, size*0.33, size*0.6);
+    c.closePath(); c.fill();
+
+    // corpo
+    c.fillStyle = '#222';
+    c.fillRect(size*0.42, size*0.25, size*0.16, size*0.22);
+
+    // cabeça / máscara
+    c.fillStyle = '#fff';
+    c.beginPath();
+    c.ellipse(size*0.5, size*0.18, size*0.12, size*0.18, 0, 0, Math.PI*2);
+    c.fill();
+
+    // chifres (simples)
+    c.strokeStyle = '#fff'; c.lineWidth = Math.max(2, size*0.04); c.lineCap='round';
+    c.beginPath(); c.moveTo(size*0.42, size*0.05); c.lineTo(size*0.32, 2); c.stroke();
+    c.beginPath(); c.moveTo(size*0.58, size*0.05); c.lineTo(size*0.68, 2); c.stroke();
+
+    // olhos
+    c.fillStyle = '#111';
+    c.beginPath(); c.ellipse(size*0.43, size*0.18, size*0.03, size*0.06, 0,0,Math.PI*2); c.fill();
+    c.beginPath(); c.ellipse(size*0.57, size*0.18, size*0.03, size*0.06, 0,0,Math.PI*2); c.fill();
+
+    // espada (pequena)
+    c.strokeStyle = '#cfd6dd'; c.lineWidth = Math.max(2, size*0.03); c.lineCap='round';
+    c.beginPath(); c.moveTo(size*0.62, size*0.45); c.lineTo(size*0.92, size*0.7); c.stroke();
+    c.beginPath(); c.arc(size*0.92, size*0.7, size*0.04, 0, Math.PI*2); c.stroke();
+
+    return s;
+  }
+
+  function makeEnemySprite(size = 120) {
+    const s = document.createElement('canvas');
+    s.width = size; s.height = size;
+    const c = s.getContext('2d');
+
+    // corpo bloco
+    c.fillStyle = '#b33';
+    c.fillRect(size*0.12, size*0.18, size*0.55, size*0.55);
+
+    // brilho / olhos
+    c.fillStyle = '#fff';
+    c.fillRect(size*0.18, size*0.22, size*0.12, size*0.12);
+    c.fillRect(size*0.46, size*0.22, size*0.12, size*0.12);
+
+    // detalhe
+    c.fillStyle = '#7b0000';
+    c.fillRect(size*0.16, size*0.62, size*0.45, size*0.08);
+
+    return s;
+  }
+
+  const playerSprite = makePlayerSprite(48);
+  const enemySpriteBase = makeEnemySprite(120);
+
+  // mapa simples: 0=solo,1=grama,2=árvore (bloqueia)
+  const map = [];
+  for (let y=0;y<rows;y++){
+    map[y]=[];
+    for (let x=0;x<cols;x++){
+      if (y>rows-6 && Math.random()<0.5) map[y][x]=1; // faixa de grama ao fundo
+      else map[y][x]=0;
+      if (Math.random()<0.03) map[y][x]=2;
+    }
+  }
+  for (let x=0;x<cols;x++) map[ Math.floor(rows/2) ][x]=0;
+
+  // Jogador
+  const player = { gx: Math.floor(cols/2), gy: Math.floor(rows/2)-3, px:0, py:0, speed:6, moving:false, dirX:0, dirY:0 };
+  player.px = player.gx * tileSize;
+  player.py = player.gy * tileSize;
+
+  // Mon padrão (seu)
+  const playerMon = { name:'Luma', hpMax:30, hp:30, atk:6 };
+
+  // Controle teclado
+  const keys = {};
+  window.addEventListener('keydown', e => keys[e.key]=true);
+  window.addEventListener('keyup', e => keys[e.key]=false);
+
+  const logEl = document.getElementById('log');
+  function log(msg){ logEl.innerHTML = msg + '<br/>' + logEl.innerHTML; }
+
+  // Batalha
+  let inBattle=false;
+  let enemyMon=null;
+  const battleBox = document.getElementById('battleBox');
+  const battleCanvas = document.getElementById('battleCanvas');
+  const bctx = battleCanvas.getContext('2d');
+  const enemyHpEl = document.getElementById('enemyHp');
+  const playerHpEl = document.getElementById('playerHp');
+  const enemyNameEl = document.getElementById('enemyName');
+  const playerNameEl = document.getElementById('playerName');
+
+  function startBattle() {
+    inBattle=true;
+    const lvl = 1 + Math.floor(Math.random()*3);
+    enemyMon = { name: ['Spike','Glim','Flar'][Math.floor(Math.random()*3)] + ' Lv'+lvl, hpMax:10+lvl*6, hp:10+lvl*6, atk:3+lvl };
+    enemyNameEl.textContent = enemyMon.name;
+    playerNameEl.textContent = playerMon.name;
+    updateHpBars();
+    battleBox.style.display = 'block';
+    document.getElementById('battleOverlay').style.pointerEvents = 'auto';
+    renderBattle();
+    log('Um ' + enemyMon.name + ' apareceu!');
+  }
+
+  function endBattle(won) {
+    inBattle=false;
+    battleBox.style.display='none';
+    document.getElementById('battleOverlay').style.pointerEvents='none';
+    if (won) {
+      log('Você venceu! Ganhou 10 moedas (simulado).');
+      playerMon.hp = Math.min(playerMon.hpMax, playerMon.hp + 6);
+    } else {
+      log('Você fugiu / perdeu...');
+    }
+  }
+
+  function updateHpBars() {
+    enemyHpEl.style.width = Math.max(0, (enemyMon.hp/enemyMon.hpMax*100)) + '%';
+    playerHpEl.style.width = Math.max(0, (playerMon.hp/playerMon.hpMax*100)) + '%';
+    function setColor(el, val){
+      if (val>60) el.style.background='limegreen';
+      else if (val>30) el.style.background='gold';
+      else el.style.background='crimson';
+    }
+    setColor(enemyHpEl, (enemyMon.hp/enemyMon.hpMax*100));
+    setColor(playerHpEl, (playerMon.hp/playerMon.hpMax*100));
+  }
+
+  // render overworld
+  function draw() {
+    for (let y=0;y<rows;y++){
+      for (let x=0;x<cols;x++){
+        const v = map[y][x];
+        if (v===0) ctx.fillStyle = '#8fb89f';
+        else if (v===1) ctx.fillStyle = '#4ca14c';
+        else if (v===2) ctx.fillStyle = '#2b5d2b';
+        ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize);
+        ctx.strokeStyle='rgba(0,0,0,0.06)';
+        ctx.strokeRect(x*tileSize, y*tileSize, tileSize, tileSize);
+      }
+    }
+
+    // desenhar jogador com sprite
+    const px = player.px, py = player.py;
+    const sw = playerSprite.width, sh = playerSprite.height;
+    const dx = Math.round(px + (tileSize - sw)/2);
+    const dy = Math.round(py + (tileSize - sh)/2);
+    ctx.drawImage(playerSprite, dx, dy);
+
+    // mensagem de debug
+    ctx.fillStyle='#fff';
+    ctx.font='12px monospace';
+    ctx.fillText('Pos: '+player.gx+','+player.gy + (inBattle? '  [BATALHA]':''), 8, 14);
+  }
+
+  // movimento suave e lógica de encontros
+  let moveCooldown=0;
+  function update(dt) {
+    if (inBattle) return;
+    if (!player.moving && moveCooldown<=0) {
+      if (keys['ArrowUp'] || keys['w']) tryMove(0,-1);
+      else if (keys['ArrowDown'] || keys['s']) tryMove(0,1);
+      else if (keys['ArrowLeft'] || keys['a']) tryMove(-1,0);
+      else if (keys['ArrowRight'] || keys['d']) tryMove(1,0);
+    }
+
+    if (player.moving) {
+      const targetX = player.gx * tileSize;
+      const targetY = player.gy * tileSize;
+      const dx = targetX - player.px;
+      const dy = targetY - player.py;
+      const dist = Math.hypot(dx,dy);
+      const step = player.speed;
+      if (dist <= step) {
+        player.px = targetX;
+        player.py = targetY;
+        player.moving = false;
+        const tile = map[player.gy][player.gx];
+        if (tile===1 && Math.random() < 0.18) {
+          startBattle();
+        }
+        moveCooldown = 8;
+      } else {
+        player.px += dx/dist*step;
+        player.py += dy/dist*step;
+      }
+    }
+
+    if (moveCooldown>0) moveCooldown--;
+  }
+
+  function tryMove(dx,dy) {
+    const nx = player.gx + dx;
+    const ny = player.gy + dy;
+    if (nx < 0 || nx >= cols || ny < 0 || ny >= rows) return;
+    const tile = map[ny][nx];
+    if (tile === 2) return;
+    player.gx = nx;
+    player.gy = ny;
+    player.moving = true;
+  }
+
+  // loop principal
+  let last=0;
+  function loop(ts){
+    const dt = ts-last; last=ts;
+    update(dt);
+    // limpar tela antes de desenhar (mantém background no CSS)
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    draw();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  // Batalha: render simples com sprites
+  function renderBattle(){
+    bctx.clearRect(0,0,battleCanvas.width,battleCanvas.height);
+    // desenhar inimigo à esquerda (usar sprite escalado)
+    bctx.drawImage(enemySpriteBase, 40, 30, 120, 120);
+    bctx.fillStyle='#fff';
+    bctx.font='18px sans-serif';
+    bctx.fillText(enemyMon.name,60,26);
+
+    // desenhar player mon à direita (usar player sprite maior)
+    bctx.drawImage(playerSprite, 420, 60, 120, 120);
+    bctx.fillText(playerMon.name,420,50);
+  }
+
+  // botões de batalha
+  document.getElementById('attackBtn').addEventListener('click', ()=> {
+    if (!inBattle) return;
+    const dmg = Math.max(1, playerMon.atk + Math.floor(Math.random()*4) - 2);
+    enemyMon.hp -= dmg;
+    log(`Você atacou e causou ${dmg} de dano.`);
+    if (enemyMon.hp <= 0) {
+      enemyMon.hp = 0; updateHpBars(); renderBattle();
+      setTimeout(()=> endBattle(true), 600); return;
+    }
+    updateHpBars(); renderBattle();
+    setTimeout(()=> {
+      const dmgE = Math.max(1, enemyMon.atk + Math.floor(Math.random()*3) - 1);
+      playerMon.hp -= dmgE;
+      log(`${enemyMon.name} atacou e causou ${dmgE} de dano.`);
+      if (playerMon.hp <= 0) {
+        playerMon.hp = 0; updateHpBars(); renderBattle();
+        log('Seu Mon desmaiou! Reiniciando...');
+        setTimeout(()=> { playerMon.hp = playerMon.hpMax; endBattle(false); }, 700);
+        return;
+      }
+      updateHpBars(); renderBattle();
+    }, 500);
+  });
+
+  document.getElementById('runBtn').addEventListener('click', ()=> {
+    if (!inBattle) return;
+    if (Math.random() < 0.6) { log('Você fugiu com sucesso.'); endBattle(false); }
+    else {
+      log('Falhou ao fugir!');
+      setTimeout(()=> {
+        const dmgE = Math.max(1, enemyMon.atk + Math.floor(Math.random()*3) - 1);
+        playerMon.hp -= dmgE;
+        log(`${enemyMon.name} atacou e causou ${dmgE} de dano.`);
+        if (playerMon.hp <= 0) { playerMon.hp = playerMon.hpMax; endBattle(false); }
+        else updateHpBars();
+      }, 400);
+    }
+  });
+
+  // UI auxiliares
+  document.getElementById('btnCenter').addEventListener('click', ()=> {
+    player.px = player.gx*tileSize; player.py = player.gy*tileSize; log('Centralizado.');
+  });
+  document.getElementById('btnStats').addEventListener('click', ()=> {
+    alert(`${playerMon.name}\nHP: ${playerMon.hp}/${playerMon.hpMax}\nATK: ${playerMon.atk}`);
+  });
+  document.getElementById('btnReset').addEventListener('click', ()=> location.reload());
+
+  // toque: clique p/ mover (opcional)
+  canvas.addEventListener('click', (e)=> {
+    if (inBattle) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const tx = Math.floor(mx / tileSize);
+    const ty = Math.floor(my / tileSize);
+    if (tx > player.gx) tryMove(1,0);
+    else if (tx < player.gx) tryMove(-1,0);
+    else if (ty > player.gy) tryMove(0,1);
+    else if (ty < player.gy) tryMove(0,-1);
+  });
+
+  log('Bem-vindo ao MonQuest! Explore e encontre Mons na grama.');
+})();
+</script>
+</body>
+</html>

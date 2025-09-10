@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pong</title>
+    <style> canvas { border:1px solid #000; display:block; margin:20px auto; background:#003; } </style>
+</head>
+<body>
+    <canvas id="meuCanvas" width="400" height="300"></canvas>
+    <script>
+        const canvas = document.getElementById('meuCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Paddle
+        const paddleHeight = 10;
+        const paddleWidth = 75;
+        let paddleX = (canvas.width - paddleWidth) / 2;
+
+        // Bola
+        let x = canvas.width / 2;
+        let y = canvas.height - 30;
+        let dx = 3;
+        let dy = -3;
+        const ballRadius = 8;
+
+        // Controle teclado
+        let rightPressed = false;
+        let leftPressed = false;
+
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+
+        function keyDownHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+            else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
+        }
+
+        function keyUpHandler(e) {
+            if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+            else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, canvas.height - paddleHeight - 5, paddleWidth, paddleHeight);
+            ctx.fillStyle = "#fff";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function draw() {
+            // fundo
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#003";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawBall();
+            drawPaddle();
+
+            // colisão nas paredes laterais
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+
+            // colisão no topo
+            if (y + dy < ballRadius) {
+                dy = -dy;
+            } else if (y + dy > canvas.height - ballRadius - paddleHeight - 5) {
+                // verificar colisão com paddle
+                if (x > paddleX && x < paddleX + paddleWidth) {
+                    // rebate e altera dx com base no ponto de impacto
+                    const collidePoint = x - (paddleX + paddleWidth / 2);
+                    const normalized = collidePoint / (paddleWidth / 2);
+                    const maxBounce = 5;
+                    dx = normalized * maxBounce;
+                    dy = -Math.abs(dy);
+                } else if (y + dy > canvas.height - ballRadius) {
+                    // bola passou do paddle -> reset simples
+                    resetBall();
+                }
+            }
+
+            x += dx;
+            y += dy;
+
+            // mover paddle
+            const paddleSpeed = 6;
+            if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += paddleSpeed;
+            } else if (leftPressed && paddleX > 0) {
+                paddleX -= paddleSpeed;
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        function resetBall() {
+            x = canvas.width / 2;
+            y = canvas.height - 30;
+            dx = (Math.random() > 0.5 ? 1 : -1) * 3;
+            dy = -3;
+            // opcional: centralizar paddle
+            paddleX = (canvas.width - paddleWidth) / 2;
+        }
+
+        // iniciar loop
+        draw();
+    </script>
+</body>
+</html>

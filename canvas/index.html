@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width= , initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="meucanvas" width="400" height="300" style="border: 5px solid black"></canvas>
+    <script>
+        const canvas = document.getElementById('meucanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Desenhar um retângulo vermelho
+        ctx.fillStyle = 'red';
+        ctx.fillRect(50, 50, 100, 50);
+
+        // Desenhar um círculo azul
+        ctx.beginPath();
+        ctx.arc(200, 100, 30, 0,2* Math.PI);
+        ctx.fillStyle = 'blue';
+        ctx.fill();
+        ctx.closePath();
+
+        // Desenhar um triângulo verde
+        ctx.beginPath();
+        ctx.moveTo(300, 50);
+        ctx.lineTo(250, 150);
+        ctx.lineTo(350, 150);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+        ctx.closePath();
+
+        // Adicionar texto preto
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText('Olá, Canvas!', 150, 280);
+
+        // apagar uma área
+        ctx.clearRect(60, 60, 30, 20);
+
+        
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>

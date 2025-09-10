@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Personagem Estilizada</title>
+    <style>
+        canvas { border: 1px solid #000; }
+    </style>
+</head>
+<body>
+    <canvas id="meuCanvas" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('meuCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Fundo escuro
+        ctx.fillStyle = "#223";
+        ctx.fillRect(0, 0, 400, 400);
+
+        // Capa vermelha
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(200, 180);
+        ctx.bezierCurveTo(120, 200, 120, 320, 200, 300);
+        ctx.bezierCurveTo(280, 320, 280, 200, 200, 180);
+        ctx.closePath();
+        ctx.fillStyle = "#d11c2b";
+        ctx.shadowColor = "#900";
+        ctx.shadowBlur = 15;
+        ctx.fill();
+        ctx.restore();
+
+        // Corpo preto
+        ctx.beginPath();
+        ctx.moveTo(200, 180);
+        ctx.lineTo(190, 320);
+        ctx.lineTo(210, 320);
+        ctx.lineTo(200, 180);
+        ctx.closePath();
+        ctx.fillStyle = "#222";
+        ctx.fill();
+
+        // Cabeça/máscara branca
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(200, 130, 35, 55, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.shadowColor = "#ccc";
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.restore();
+
+        // "Chifres" da máscara
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(200, 80);
+        ctx.lineTo(185, 30);
+        ctx.lineTo(195, 90);
+        ctx.moveTo(200, 80);
+        ctx.lineTo(215, 30);
+        ctx.lineTo(205, 90);
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        ctx.restore();
+
+        // Olhos pretos
+        ctx.beginPath();
+        ctx.ellipse(190, 130, 7, 12, 0, 0, Math.PI * 2);
+        ctx.ellipse(210, 130, 7, 12, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "#222";
+        ctx.fill();
+
+        // Espada/prendedor
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(220, 220);
+        ctx.lineTo(350, 260);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = "#ccc";
+        ctx.stroke();
+        ctx.restore();
+
+        // Flores brancas no chão
+        for(let i=0; i<30; i++) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(30 + Math.random()*340, 370 + Math.random()*20, 7 + Math.random()*5, 0, Math.PI*2);
+            ctx.fillStyle = "#fff";
+            ctx.globalAlpha = 0.7;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Efeito de energia (linha curva)
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(80, 320);
+        ctx.quadraticCurveTo(200, 100, 320, 320);
+        ctx.strokeStyle = "rgba(255,255,255,0.5)";
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 6]);
+        ctx.stroke();
+        ctx.restore();
+    </script>
+</body>
+</html>

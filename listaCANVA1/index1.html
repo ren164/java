@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Pixel Art 1500 pixels</title>
+    <style>
+        canvas { border: 1px solid #000; }
+    </style>
+</head>
+<body>
+    <canvas id="meuCanvas" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('meuCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Tamanho do pixel para 30x50 grade
+        const pxSize = 13; // 13*30 = 390, 13*50 = 650 (vai cortar um pouco embaixo, ajuste se quiser)
+
+        // Função para desenhar um "pixel"
+        function px(x, y, cor) {
+            ctx.fillStyle = cor;
+            ctx.fillRect(x * pxSize, y * pxSize, pxSize, pxSize);
+        }
+
+        // Fundo preto
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, 400, 400);
+
+        // Espada (agulha)
+        for (let i = 10; i < 22; i++) {
+            px(i, 38 + Math.floor((i-10)/2), "#bfc7d5");
+        }
+        // Círculo no cabo
+        ctx.beginPath();
+        ctx.arc(22 * pxSize + pxSize/2, 44 * pxSize + pxSize/2, pxSize, 0, Math.PI * 2);
+        ctx.fillStyle = "#bfc7d5";
+        ctx.fill();
+
+        // Corpo preto
+        px(14, 27, "#222");
+        px(15, 27, "#222");
+        px(14, 28, "#222");
+        px(15, 28, "#222");
+
+        // Capa pixelada (vermelho escuro)
+        for (let x = 12; x <= 17; x++) px(x, 29, "#7c3a4a");
+        for (let x = 12; x <= 17; x++) px(x, 30, "#7c3a4a");
+        for (let x = 13; x <= 16; x++) px(x, 31, "#7c3a4a");
+        for (let x = 13; x <= 16; x++) px(x, 32, "#7c3a4a");
+        px(14, 33, "#7c3a4a");
+        px(15, 33, "#7c3a4a");
+
+        // Cabeça/máscara branca
+        px(14, 21, "#fff");
+        px(15, 21, "#fff");
+        for (let x = 13; x <= 16; x++) px(x, 22, "#fff");
+        for (let x = 13; x <= 16; x++) px(x, 23, "#fff");
+        for (let x = 13; x <= 16; x++) px(x, 24, "#fff");
+        px(13, 25, "#fff");
+        px(16, 25, "#fff");
+
+        // Chifres
+        px(13, 19, "#fff");
+        px(16, 19, "#fff");
+        px(12, 17, "#fff");
+        px(17, 17, "#fff");
+
+        // Olhos pretos
+        px(14, 24, "#222");
+        px(15, 24, "#222");
+
+    </script>
+</body>
+</html>

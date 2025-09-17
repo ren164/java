@@ -1,0 +1,182 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #0056b3;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+h1, h2, h3 {
+    color: #0056b3;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.container {
+    margin-bottom: 20px;
+}
+
+/* Seção 1: Comparação de Tamanhos de Fonte */
+.font-comparison .px-font {
+    font-size: 16px; /* Fixed size in pixels */
+    border: 1px solid #ff0000;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.font-comparison .em-font {
+    font-size: 1.2em; /* Relative to parent's font-size (body's default or inherited) */
+    border: 1px solid #008000;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.font-comparison .rem-font {
+    font-size: 1.2rem; /* Relative to the root html font-size */
+    border: 1px solid #0000ff;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+html {
+    font-size: 16px; /* Base font size for rem calculations */
+}
+
+/* Seção 2: Responsividade de Imagens */
+.image-responsiveness .fixed-width-img {
+    width: 300px; /* Fixed width */
+    height: auto; /* Maintain aspect ratio */
+    border: 2px solid #ff0000;
+    display: block;
+    margin: 0 auto 10px auto; /* Center image */
+}
+
+.image-responsiveness .responsive-img {
+    max-width: 100%; /* Responsive: never exceed parent width */
+    height: auto; /* Maintain aspect ratio */
+    display: block;
+    border: 2px solid #008000;
+    margin: 0 auto 10px auto; /* Center image */
+}
+
+/* Seção 3: Página de Perfil */
+.profile-page .profile-card {
+    text-align: center;
+    padding: 20px;
+    background-color: #e9f7ff;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-page .profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Circular image */
+    object-fit: cover;
+    border: 4px solid #0056b3;
+    margin-bottom: 15px;
+    max-width: 100%; /* Ensure image is responsive */
+}
+
+.profile-page .profile-name {
+    font-size: 2.5rem; /* Nome em destaque */
+    color: #003366;
+    margin-bottom: 10px;
+}
+
+.profile-page .profile-description {
+    font-size: 1.1rem;
+    color: #555;
+    text-align: center;
+}
+
+/* Media Query para Página de Perfil */
+@media (max-width: 600px) {
+    .profile-page .profile-name {
+        font-size: 1.8rem; /* Diminuir o tamanho da fonte do nome */
+    }
+    body {
+        background-color: #ffe0b2; /* Alterar a cor de fundo da página */
+    }
+}
+
+/* Seção 4: Layout de Seções com Breakpoints */
+.sections-container {
+    display: flex; /* Em telas grandes: lado a lado */
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.section-item {
+    flex: 1;
+    min-width: 280px; /* Minimum width for items before wrapping */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section-item.home { background-color: #e6ffe6; }
+.section-item.about { background-color: #e6f7ff; }
+.section-item.contact { background-color: #fff0e6; }
+
+/* Breakpoints para Seções */
+
+/* Celular - até 600px */
+@media (max-width: 600px) {
+    .sections-container {
+        flex-direction: column; /* Uma embaixo da outra */
+    }
+    .section-item {
+        width: 100%;
+    }
+    body {
+        background-color: #ffcccc; /* Cor de fundo para celular */
+    }
+}
+
+/* Tablet - de 601px até 1024px */
+@media (min-width: 601px) and (max-width: 1024px) {
+    body {
+        background-color: #ccffcc; /* Cor de fundo para tablet */
+    }
+}
+
+/* Desktop - acima de 1024px */
+@media (min-width: 1025px) {
+    body {
+        background-color: #cceeff; /* Cor de fundo para desktop */
+    }
+}
+
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #0056b3;
+    color: #fff;
+    margin-top: 30px;
+}

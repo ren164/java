@@ -1,87 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsividade</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercício Responsividade</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Demonstração de Responsividade</h1>
-    </header>
+  
+  <!-- 1. Parágrafos com tamanhos diferentes -->
+  <section id="fontes">
+    <h2>1 - Fontes em px, em e rem</h2>
+    <p class="px">Este parágrafo está com <strong>font-size: 20px</strong></p>
+    <p class="em">Este parágrafo está com <strong>font-size: 2em</strong></p>
+    <p class="rem">Este parágrafo está com <strong>font-size: 2rem</strong></p>
+    <p class="explicacao">
+      <strong>Diferença:</strong> <br>
+      <code>px</code> → valor fixo, não se adapta. <br>
+      <code>em</code> → relativo ao tamanho do elemento pai. <br>
+      <code>rem</code> → relativo ao tamanho da raiz (html), mais previsível para responsividade.
+    </p>
+  </section>
 
-    <main>
-        <!-- Seção 1: Comparação de Tamanhos de Fonte -->
-        <section class="font-comparison">
-            <h2>1 - Comparação de Tamanhos de Fonte</h2>
-            <div class="container">
-                <p class="px-font">Este é um parágrafo com font-size em pixels (px).</p>
-                <p class="em-font">Este é um parágrafo com font-size em em (em).</p>
-                <p class="rem-font">Este é um parágrafo com font-size em rem (rem).</p>
-            </div>
-            <h3>Explicação:</h3>
-            <p>
-                <strong>Pixels (px):</strong> Unidade de medida absoluta. O tamanho da fonte definido em pixels será sempre o mesmo, independentemente do tamanho da tela ou das configurações de fonte do navegador. É fixo e não se adapta.
-            </p>
-            <p>
-                <strong>Em (em):</strong> Unidade de medida relativa ao tamanho da fonte do elemento pai. Se o elemento pai não tiver um tamanho de fonte definido, ele herda do seu próprio pai, e assim por diante, até o elemento raiz (html). Isso significa que o tamanho pode variar dependendo do contexto.
-            </p>
-            <p>
-                <strong>Rem (rem):</strong> Unidade de medida relativa ao tamanho da fonte do elemento raiz (html). Ao contrário do 'em', que é relativo ao pai imediato, o 'rem' é sempre relativo ao elemento 'html'. Isso o torna mais previsível e fácil de gerenciar em layouts responsivos, pois uma única mudança no tamanho da fonte do 'html' afeta todos os elementos que usam 'rem'.
-            </p>
-        </section>
+  <!-- 2. Imagem fixa e responsiva -->
+  <section id="imagens">
+    <h2>2 - Imagens</h2>
+    <img src="https://via.placeholder.com/600x300" alt="Imagem fixa" class="fixa">
+    <img src="https://via.placeholder.com/600x300" alt="Imagem responsiva" class="responsiva">
+    <p>
+      Com <code>width: 300px</code> a imagem não se adapta.  
+      Com <code>max-width: 100%</code> a imagem reduz conforme a tela diminui, mantendo a proporção.
+    </p>
+  </section>
 
-        <!-- Seção 2: Responsividade de Imagens -->
-        <section class="image-responsiveness">
-            <h2>2 - Responsividade de Imagens</h2>
-            <div class="container">
-                <h3>Imagem com width: 300px (fixa)</h3>
-                <img src="https://via.placeholder.com/300x200.png?text=Imagem+Fixa" alt="Imagem Fixa" class="fixed-width-img">
-                <p>
-                    Esta imagem tem uma largura fixa de 300 pixels. Quando a tela diminui, a imagem mantém seu tamanho, podendo causar um overflow e quebrar o layout em telas menores.
-                </p>
+  <!-- 3. Página de perfil -->
+  <section id="perfil">
+    <h2>3 - Perfil</h2>
+    <div class="card">
+      <img src="https://via.placeholder.com/150" alt="Foto de perfil" class="perfil-foto">
+      <h3 class="perfil-nome">Maria da Silva</h3>
+      <p class="perfil-desc">Desenvolvedora front-end apaixonada por design responsivo e usabilidade.</p>
+    </div>
+  </section>
 
-                <h3>Imagem com max-width: 100% (responsiva)</h3>
-                <img src="https://via.placeholder.com/600x400.png?text=Imagem+Responsiva" alt="Imagem Responsiva" class="responsive-img">
-                <p>
-                    Esta imagem tem <code>max-width: 100%</code> e <code>height: auto</code>. Isso significa que ela nunca excederá a largura de seu contêiner pai. Quando a tela diminui, a imagem se ajusta proporcionalmente, mantendo a proporção e evitando quebras de layout.
-                </p>
-            </div>
-        </section>
+  <!-- 4. Seções Home, Sobre, Contato -->
+  <section id="secoes">
+    <h2>4 - Seções</h2>
+    <div class="container">
+      <div class="secao">Home</div>
+      <div class="secao">Sobre</div>
+      <div class="secao">Contato</div>
+    </div>
+  </section>
 
-        <!-- Seção 3: Página de Perfil -->
-        <section class="profile-page">
-            <h2>3 - Página de Perfil</h2>
-            <div class="profile-card">
-                <img src="https://via.placeholder.com/150/0000FF/FFFFFF?text=Foto+Perfil" alt="Foto de Perfil" class="profile-pic">
-                <h3 class="profile-name">Nome do Usuário</h3>
-                <p class="profile-description">Uma breve descrição sobre o usuário. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            </div>
-        </section>
-
-        <!-- Seção 4: Layout de Seções com Breakpoints -->
-        <section class="layout-sections">
-            <h2>4 - Layout de Seções com Breakpoints</h2>
-            <div class="sections-container">
-                <div class="section-item home">
-                    <h3>Home</h3>
-                    <p>Bem-vindo à página inicial.</p>
-                </div>
-                <div class="section-item about">
-                    <h3>Sobre</h3>
-                    <p>Informações sobre nós.</p>
-                </div>
-                <div class="section-item contact">
-                    <h3>Contato</h3>
-                    <p>Entre em contato conosco.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Demonstração de Responsividade</p>
-    </footer>
 </body>
 </html>

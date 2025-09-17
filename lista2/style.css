@@ -1,0 +1,101 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: white;
+    color: #333;
+}
+
+/* Section titles */
+h1, h2 {
+    text-align: center;
+}
+
+/* Paragraph font sizes for task 1 */
+.font-px {
+    font-size: 24px;
+}
+.font-em {
+    font-size: 1.5em;
+}
+.font-rem {
+    font-size: 1.5rem;
+}
+
+/* Image styles for task 2 */
+.fixed-width {
+    width: 300px;
+    border: 2px solid #333;
+    margin-bottom: 20px;
+}
+.responsive {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #007bff;
+}
+
+/* Profile page styles for task 3 */
+.profile-container {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+.profile-photo {
+    width: 150px;
+    max-width: 100%;
+    border-radius: 50%;
+}
+.profile-name {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0;
+}
+.profile-description {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Sections for task 4 */
+.sections-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    gap: 10px;
+}
+.section {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Responsive layout for small screens */
+@media (max-width: 600px) {
+    /* Task 1: font size and background color changes */
+    body {
+        background-color: #f0e68c; /* light khaki */
+    }
+    /* Task 3: profile name smaller */
+    .profile-name {
+        font-size: 1.2rem;
+    }
+    /* Task 4: sections stacked vertically */
+    .sections-container {
+        flex-direction: column;
+    }
+}
+
+/* Tablet breakpoint */
+@media (min-width: 601px) and (max-width: 1024px) {
+    body {
+        background-color: #add8e6; /* light blue */
+    }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1025px) {
+    body {
+        background-color: #90ee90; /* light green */
+    }
+}

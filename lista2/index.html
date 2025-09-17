@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Projeto Responsividade</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <h1>Projeto de Responsividade</h1>
+
+    <!-- Task 1: Font sizes -->
+    <section id="task1">
+        <h2>1. Font Sizes: px, em, rem</h2>
+        <p class="font-px">Este texto tem font-size definido em <strong>pixels (px)</strong>: 24px.</p>
+        <p class="font-em">Este texto tem font-size definido em <strong>em</strong>: 1.5em.</p>
+        <p class="font-rem">Este texto tem font-size definido em <strong>rem</strong>: 1.5rem.</p>
+        <p><strong>Explicação:</strong> px é fixo, em é relativo ao pai, rem é relativo à raiz.</p>
+    </section>
+
+    <!-- Task 2: Responsive image -->
+    <section id="task2">
+        <h2>2. Imagem Responsiva</h2>
+        <h3>Imagem com width: 300px (fixa)</h3>
+        <img src="https://via.placeholder.com/600x400" alt="Imagem fixa" class="fixed-width" />
+        <h3>Imagem com max-width: 100% (responsiva)</h3>
+        <img src="https://via.placeholder.com/600x400" alt="Imagem responsiva" class="responsive" />
+        <p><strong>Explicação:</strong> A imagem fixa mantém 300px, enquanto a responsiva se ajusta à tela.</p>
+    </section>
+
+    <!-- Task 3: Profile page -->
+    <section id="task3">
+        <h2>3. Página de Perfil</h2>
+        <div class="profile-container">
+            <img src="https://via.placeholder.com/150x150" alt="Foto de perfil" class="profile-photo" />
+            <h3 class="profile-name">Nome do Usuário</h3>
+            <p class="profile-description">Uma breve descrição sobre o usuário, com informações relevantes.</p>
+        </div>
+    </section>
+
+    <!-- Task 4: Sections with breakpoints -->
+    <section id="task4">
+        <h2>4. Seções com Breakpoints</h2>
+        <div class="sections-container">
+            <div class="section" style="background-color: #ffe4e1;">Home</div>
+            <div class="section" style="background-color: #e0ffff;">Sobre</div>
+            <div class="section" style="background-color: #f0fff0;">Contato</div>
+        </div>
+        <p><strong>Breakpoints:</strong> Celular (até 600px): fundo amarelo-claro, seções empilhadas. Tablet (601-1024px): fundo azul-claro. Desktop (>1024px): fundo verde-claro, seções lado a lado.</p>
+    </section>
+</body>
+</html>
